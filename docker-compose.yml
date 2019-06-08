@@ -1,0 +1,61 @@
+version: '2.1'
+services:
+    zoo1:
+        image: zookeeper:3.4.14
+        restart: always
+        hostname: zoo1
+        container_name: zoo1
+        environment:
+            ZOO_MY_ID: 1
+            ZOO_SERVERS: server.1=0.0.0.0:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+
+    zoo2:
+        image: zookeeper:3.4.14
+        restart: always
+        hostname: zoo2
+        container_name: zoo2
+        environment:
+            ZOO_MY_ID: 2
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=0.0.0.0:2888:3888 server.3=zoo3:2888:3888
+
+    zoo3:
+        image: zookeeper:3.4.14
+        restart: always
+        hostname: zoo3
+        container_name: zoo3
+        environment:
+            ZOO_MY_ID: 3
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=0.0.0.0:2888:3888
+
+    kafka01:
+        image: wurstmeister/kafka:2.11-1.1.1
+        hostname: kafka01
+        container_name: kafka01
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ADVERTISED_HOST_NAME: kafka01
+            KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
+            KAFKA_NUM_PARTITIONS: 3
+            KAFKA_LOG_RETENTION_HOURS: 1
+
+    kafka02:
+        image: wurstmeister/kafka:2.11-1.1.1
+        hostname: kafka02
+        container_name: kafka02
+        environment:
+            KAFKA_BROKER_ID: 2
+            KAFKA_ADVERTISED_HOST_NAME: kafka02
+            KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
+            KAFKA_NUM_PARTITIONS: 3
+            KAFKA_LOG_RETENTION_HOURS: 1
+
+    kafka03:
+        image: wurstmeister/kafka:2.11-1.1.1
+        hostname: kafka03
+        container_name: kafka03
+        environment:
+            KAFKA_BROKER_ID: 3
+            KAFKA_ADVERTISED_HOST_NAME: kafka03
+            KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
+            KAFKA_NUM_PARTITIONS: 3
+            KAFKA_LOG_RETENTION_HOURS: 1
